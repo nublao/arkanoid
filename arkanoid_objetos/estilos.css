@@ -1,51 +1,5 @@
-#divCaja {
+#divContenedor {
     background-color: rgb(87, 87, 87);
-    position: absolute;
+    position: relative;
     margin: auto;
-  }
-  #divPelota {
-    background-color: rgb(253, 109, 253);
-    position: absolute;
-    border-radius: 50%;
-  }
-  #divBarra {
-    background-color: rgb(91, 136, 192);
-    position: absolute;
-    border-radius: 50px;
-  }
-  #divLadrillo1 {
-    background-color: orange;
-    position: absolute;
-  }
-  #divLadrillo2 {
-    background-color: green;
-    position: absolute;
-  }
-  #divLadrillo3 {
-    background-color: red;
-    position: absolute;
-  }
-  .texto {
-    color: white;
-    font-weight: bolder;
-    position: absolute;
-  }
-  #textoEmpezar {
-    top: 300px;
-    left: 150px;
-  }
-  #textoGanado {
-    top: 300px;
-    left: 250px;
-  }
-  #textoPerdido {
-    top: 300px;
-    left: 250px;
-  }
-  #textoVidas {
-    color: white;
-    font-weight: bolder;
-    position: absolute;
-    margin-left: 70px;
-    margin-top: 3px;
-  }
+}
