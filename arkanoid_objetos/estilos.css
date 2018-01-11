@@ -1,5 +1,5 @@
 #divContenedor {
     background-color: rgb(87, 87, 87);
-    position: relative;
+    position: absolute;
     margin: auto;
 }
