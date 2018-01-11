@@ -2,6 +2,10 @@
 var anchoContenedor = 1200;
 var altoContenedor = 700;
 
+// Variables globales de dirección y movimiento
+var sube;
+var aLaIzquierda;
+
 // Constructor de la barra
 function Barra(id) {
   this.anchoBarra = 150;
@@ -64,6 +68,102 @@ Barra.prototype.moverBarraRaton = function(posRaton) {
   }
 }
 
+// Constructor de la pelota
+function Pelota(id) {
+  this.tamanoPelota = 25;
+  this.posXpelota = (anchoContenedor / 2) - (this.tamanoPelota / 2);
+  this.posYpelota = barra.posYbarra - this.tamanoPelota;
+  this.pasoXpelota = -2;
+  this.pasoYpelota = -2;
+  this.colorPelota = 'rgb(91, 136, 192)';
+  this.radioBorde = 50;
+  this.id = id;
+}
+
+// Creación de la pelota
+Pelota.prototype.crearPelota = function() {
+  this.divPelota = document.createElement('div');
+  this.divPelota.id = this.id;
+  this.divPelota.style.top = this.posYpelota + 'px';
+  this.divPelota.style.left = this.posXpelota + 'px';
+  this.divPelota.style.width = this.tamanoPelota + 'px';
+  this.divPelota.style.height = this.tamanoPelota + 'px';
+  this.divPelota.style.backgroundColor = this.colorPelota;
+  this.divPelota.style.borderRadius = this.radioBorde + '%';
+  this.divPelota.style.position = 'absolute';
+  contenedor.appendChild(this.divPelota);
+}
+
+//Funciones de la pelota
+function lanzarPelota(teclado) {
+  var evento = window.event || teclado;
+  if(evento.keyCode == 32 && parado) {
+    this.posYpelota = this.posYbarra - tamanoPelota;
+    posXpelota = posXbarra + (anchoBarra / 2);
+    timerPelota = setInterval(moverPelota, velocidad);
+    parado = false;
+    sube = true;
+    textoEmpezar.style.visibility = 'hidden';
+  }
+}
+
+function moverPelota(elEvento) {
+  var evento = window.event || elEvento;
+  reboteEnBarra();
+  hasGanado();
+
+  // Colision con bordes
+  if(posXpelota >= (anchoCaja - tamanoPelota)) {
+    pasoXpelota = -pasoXpelota;
+  }
+  if(posXpelota <= 0) {
+    pasoXpelota = -pasoXpelota;
+    aLaIzquierda = false;
+  }
+
+  // Paramos la pelota si llega abajo del todo y quitamos vidas
+  if(posYpelota >= (altoCaja - tamanoPelota)) {
+    vidas--;
+    if(vidas > 0) {
+      posYpelota = posYbarra - tamanoPelota;
+      posXpelota = posXbarra + (anchoBarra / 2)
+      parado = true;
+      pasoYpelota = -pasoYpelota;
+      clearInterval(timerPelota);
+    }
+    else {
+      hasPerdido();
+    }
+    vida.innerHTML = vidas;
+  }
+  if(posYpelota <= 0) {
+    pasoYpelota = -pasoYpelota;
+    sube = false;
+  }
+
+  posXpelota += pasoXpelota;
+  posYpelota += pasoYpelota;
+  pelota.style.left = posXpelota + 'px';
+  pelota.style.top = posYpelota + 'px';
+}
+
+function reboteEnBarra() {
+  /*
+  for(var i = posXpelota; i < posXpelota + tamanoPelota; i+= 40) {
+    pintarColision(i, posYpelota, "#ff0000");
+    pintarColision(i + tamanoPelota, posYpelota, "#ff0000");
+    
+  }
+  */
+  if(posYpelota + tamanoPelota >= posYbarra && !sube
+      && posXpelota + tamanoPelota >= posXbarra 
+      && posXpelota <= posXbarra + anchoBarra) {
+        
+    pasoYpelota = -pasoYpelota;
+    sube = true;
+  }
+}
+
 // Carga de la página
 window.onload = function() {
   contenedor = document.getElementById('divContenedor');
@@ -71,6 +171,8 @@ window.onload = function() {
   contenedor.style.height = altoContenedor + 'px';
   barra = new Barra('barra');
   barra.crearBarra();
+  pelotaInicial = new Pelota('pelotaInicial');
+  pelotaInicial.crearPelota();
   // Llamamos a las funciones
   document.onkeydown = function(direccion) {
     barra.moverBarraTeclado(direccion);
