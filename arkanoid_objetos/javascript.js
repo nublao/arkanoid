@@ -110,7 +110,6 @@ function lanzarPelota(teclado) {
 function moverPelota(elEvento) {
   var evento = window.event || elEvento;
   reboteEnBarra();
-  hasGanado();
 
   // Colision con bordes
   if(posXpelota >= (anchoCaja - tamanoPelota)) {
