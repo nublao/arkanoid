@@ -3,3 +3,10 @@
     position: absolute;
     margin: auto;
 }
+.textoVidas {
+    color: white;
+    font-weight: bolder;
+    position: absolute;
+    margin-left: 70px;
+    margin-top: 3px;
+  }
