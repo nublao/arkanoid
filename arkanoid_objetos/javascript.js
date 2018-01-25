@@ -113,16 +113,22 @@ Pelota.prototype.lanzarPelota = function(teclado) {
     this.timerPelota = setInterval(this.moverPelota.bind(this), this.velocidad);
     this.parado = false;
     this.sube = true;
-    
   }
 }
 
 Pelota.prototype.moverPelota = function(elEvento) {
   var evento = window.event || elEvento;
   this.reboteEnBarra();
-  //console.log(this.posYpelota);
-  
+  this.reboteEnParedes();
+  this.perderVidas();
 
+  this.posXpelota += this.pasoXpelota;
+  this.posYpelota += this.pasoYpelota;
+  this.divPelota.style.left = this.posXpelota + 'px';
+  this.divPelota.style.top = this.posYpelota + 'px';
+}
+
+Pelota.prototype.reboteEnParedes = function() {
   // Colision con bordes
   if(this.posXpelota >= (anchoContenedor - this.tamanoPelota)) {
     this.pasoXpelota = -this.pasoXpelota;
@@ -131,13 +137,15 @@ Pelota.prototype.moverPelota = function(elEvento) {
     this.pasoXpelota = -this.pasoXpelota;
     this.aLaIzquierda = false;
   }
+}
 
+Pelota.prototype.perderVidas = function() {
   // Paramos la pelota si llega abajo del todo y quitamos vidas
   if(this.posYpelota >= (altoContenedor - this.tamanoPelota)) {
     vidas--;
     if(vidas > 0) {
       this.posYpelota = barra.posYbarra - this.tamanoPelota;
-      this.posXpelota = barra.posXbarra + (barra.anchoBarra / 2)
+      this.posXpelota = barra.posXbarra + (barra.anchoBarra / 2) - (this.tamanoPelota / 2);
       this.parado = true;
       this.pasoYpelota = -this.pasoYpelota;
       clearInterval(this.timerPelota);
@@ -151,17 +159,12 @@ Pelota.prototype.moverPelota = function(elEvento) {
     this.pasoYpelota = -this.pasoYpelota;
     this.sube = false;
   }
-
-  this.posXpelota += this.pasoXpelota;
-  this.posYpelota += this.pasoYpelota;
-  this.divPelota.style.left = this.posXpelota + 'px';
-  this.divPelota.style.top = this.posYpelota + 'px';
 }
 
-Pelota.prototype.posicionPelotaParadaRaton = function(evento) {
+Pelota.prototype.posicionPelotaParada = function() {
   // Posición de pelota al inicio
   if(this.parado) {
-    this.posXpelota = evento.clientX - (this.tamanoPelota / 2);
+    this.posXpelota = barra.posXbarra + (barra.anchoBarra / 2) - (this.tamanoPelota / 2);
     this.posYpelota = barra.posYbarra - this.tamanoPelota;
     this.divPelota.style.left = this.posXpelota + 'px';
     if(this.posXpelota <= 0) {
@@ -183,8 +186,7 @@ Pelota.prototype.reboteEnBarra = function() {
   */
   if(this.posYpelota + this.tamanoPelota >= barra.posYbarra && !this.sube
       && this.posXpelota + this.tamanoPelota >= barra.posXbarra 
-      && this.posXpelota <= barra.posXbarra + barra.anchoBarra) {
-        
+      && this.posXpelota <= barra.posXbarra + barra.anchoBarra) {        
     this.pasoYpelota = -this.pasoYpelota;
     this.sube = true;
   }
@@ -195,24 +197,24 @@ window.onload = function() {
   contenedor = document.getElementById('divContenedor');
   contenedor.style.width = anchoContenedor + 'px';
   contenedor.style.height = altoContenedor + 'px';
+  // Instanciamos los objetos
   barra = new Barra('barra');
   barra.crearBarra();
   pelotaInicial = new Pelota('pelotaInicial');
   pelotaInicial.crearPelota();
+
   // Llamamos a las funciones
   document.onkeypress = function(teclado) {
     pelotaInicial.lanzarPelota(teclado);
   }
-
   document.onkeydown = function(direccion) {
     barra.moverBarraTeclado(direccion);
+    pelotaInicial.posicionPelotaParada();
   }
   document.onmousemove = function(posRaton) {
     barra.moverBarraRaton(posRaton);
-    pelotaInicial.posicionPelotaParada(posRaton);
+    pelotaInicial.posicionPelotaParada();
   }
-
-  
-  
+  // Ocultamos el cursor
   contenedor.style.cursor = 'none';
 }
