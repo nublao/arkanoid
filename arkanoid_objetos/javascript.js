@@ -1,7 +1,9 @@
 // Variables globales de jugabilidad
 var vidas = 3;
-var cantLadrillos = 39;
+var cantLadrillos = 3;
 var contDestruidos = 0;
+var golpeados;
+
 
 // Variables globales de tamaños
 var anchoContenedor = 1200;
@@ -118,12 +120,15 @@ Pelota.prototype.lanzarPelota = function(teclado, barra) {
   }
 }
 
-Pelota.prototype.moverPelota = function(elEvento, barra, ladrillo) {
-  var evento = window.event || elEvento;
-  this.reboteEnBarra();
+Pelota.prototype.moverPelota = function() {
+  this.reboteEnBarra(barraInicial);
   this.reboteEnParedes();
-  this.perderVidas();
-  ladrillo.colisionLadrillo(this);
+  this.perderVidas(barraInicial);
+  hasGanado();
+  
+  for(var i = 0; i < cantLadrillos; i++) {
+    ladrillos[i].colisionLadrillo(this);
+  }
 
   this.posXpelota += this.pasoXpelota;
   this.posYpelota += this.pasoYpelota;
@@ -139,6 +144,16 @@ Pelota.prototype.reboteEnParedes = function() {
   if(this.posXpelota <= 0) {
     this.pasoXpelota = -this.pasoXpelota;
     this.aLaIzquierda = false;
+  }
+}
+
+Pelota.prototype.reboteEnBarra = function(barra) {
+  
+  if(this.posYpelota + this.tamanoPelota >= barra.posYbarra && !this.sube
+      && this.posXpelota + this.tamanoPelota >= barra.posXbarra 
+      && this.posXpelota <= barra.posXbarra + barra.anchoBarra) {        
+    this.pasoYpelota = -this.pasoYpelota;
+    this.sube = true;
   }
 }
 
@@ -179,16 +194,6 @@ Pelota.prototype.posicionPelotaParada = function(barra) {
   }
 }
 
-Pelota.prototype.reboteEnBarra = function(barra) {
-  
-  if(this.posYpelota + this.tamanoPelota >= barra.posYbarra && !this.sube
-      && this.posXpelota + this.tamanoPelota >= barra.posXbarra 
-      && this.posXpelota <= barra.posXbarra + barra.anchoBarra) {        
-    this.pasoYpelota = -this.pasoYpelota;
-    this.sube = true;
-  }
-}
-
 function Ladrillo(id, posXladrillo, posYladrillo) {
   this.id = id;
   this.posXladrillo = posXladrillo;
@@ -197,6 +202,7 @@ function Ladrillo(id, posXladrillo, posYladrillo) {
   this.altoLadrillo = 25;
   this.colorLadrillo = 'rgb(25, 255, 255)';
   this.golpeado = false;
+  this.golpe = false;
   this.crearLadrillo();
 }
 
@@ -212,9 +218,16 @@ Ladrillo.prototype.crearLadrillo = function() {
   contenedor.appendChild(this.divLadrillo);
 }
 
+function ganarPuntos(id) {
+  golpeados = new Array(cantLadrillos);
+  golpeados[id] = true;
+  80923yt123hggaadgsganarPuntos(this.divLadrillo.id);sdfasdg
+}
+
 Ladrillo.prototype.colisionLadrillo = function(pelota) {
   if(this.golpeado) {
     this.divLadrillo.style.visibility = 'hidden';
+    80923yt123hggaadgsganarPuntos(this.divLadrillo.id);sdfasdg
   }
   // Por arriba
   if( !pelota.sube
@@ -223,9 +236,10 @@ Ladrillo.prototype.colisionLadrillo = function(pelota) {
       && pelota.posYpelota <= this.posYladrillo + this.altoLadrillo
       && pelota.posXpelota + pelota.tamanoPelota >= this.posXladrillo
       && pelota.posXpelota <= this.posXladrillo + this.anchoLadrillo) {
-        this.golpeado = true;
+    this.golpeado = true;
     pelota.pasoYpelota = -pelota.pasoYpelota;
     pelota.sube = true;
+    this.golpe = true;
   }
   // Por abajo
   else if(pelota.sube
@@ -262,10 +276,12 @@ Ladrillo.prototype.colisionLadrillo = function(pelota) {
 }
 
 function hasGanado() {
-  if(golpeado1 && golpeado2 && golpeado3) {
-    clearInterval(timerPelota);
-    txtGanado.style.visibility = 'visible';
+  for(var i = 0; i < cantLadrillos; i++) {
+    if(golpeados[i] == true) {
+      contDestruidos++;
+    }
   }
+  80923yt123hggaadgsganarPuntos(this.divLadrillo.id);sdfasdg
 }
 function hasPerdido() {
   clearInterval(timerPelota);
