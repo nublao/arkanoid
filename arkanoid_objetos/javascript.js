@@ -1,5 +1,6 @@
 // Variables globales de jugabilidad
 var vidas = 3;
+var cantLadrillos = 39;
 
 // Variables globales de tamaños
 var anchoContenedor = 1200;
@@ -192,50 +193,72 @@ Pelota.prototype.reboteEnBarra = function(barra) {
   }
 }
 
-function colisionLadrillos() {
-  if(golpeado1) {
-    ladrillo1.style.visibility = 'hidden';
+function Ladrillo(id, posXladrillo, posYladrillo) {
+  this.id = id;
+  this.posXladrillo = posXladrillo;
+  this.posYladrillo = posYladrillo;
+  this.anchoLadrillo = 75;
+  this.altoLadrillo = 25;
+  this.colorLadrillo = 'rgb(25, 255, 255)';
+  this.crearLadrillo();
+}
+
+Ladrillo.prototype.crearLadrillo = function() {
+  this.divLadrillo = document.createElement('div');
+  this.divLadrillo.id = this.id;
+  this.divLadrillo.style.top = this.posYladrillo + 'px';
+  this.divLadrillo.style.left = this.posXladrillo + 'px';
+  this.divLadrillo.style.width = this.anchoLadrillo + 'px';
+  this.divLadrillo.style.height = this.altoLadrillo + 'px';
+  this.divLadrillo.style.backgroundColor = this.colorLadrillo;
+  this.divLadrillo.style.position = 'absolute';
+  contenedor.appendChild(this.divLadrillo);
+}
+
+Ladrillo.prototype.colisionLadrillo = function() {
+  if(this.golpeado) {
+    this.divLadrillo.style.visibility = 'hidden';
   }
   // Por arriba
   if( !sube
-      && !golpeado1
+      && !this.golpeado
       && posYpelota + tamanoPelota >= posYladrillos
       && posYpelota <= posYladrillos + altoLadrillo
       && posXpelota + tamanoPelota >= posXladrillo1 
       && posXpelota <= posXladrillo1 + anchoLadrillo) {
-    golpeado1 = true;
+        this.golpeado = true;
     pasoYpelota = -pasoYpelota;
     sube = true;
   }
   // Por abajo
   else if( sube
-      && !golpeado1
+      && !this.golpeado
       && posYpelota <= posYladrillos + altoLadrillo
       && posXpelota + tamanoPelota >= posXladrillo1 
       && posXpelota <= posXladrillo1 + anchoLadrillo) {
-    golpeado1 = true;
+    this.golpeado = true;
     pasoYpelota = -pasoYpelota;
     sube = false;
   }
   // Por la izquierda
   else if( !aLaIzquierda
-      && !golpeado1
+      && !this.golpeado
       && posYpelota + tamanoPelota >= posYladrillos
       && posYpelota <= posYladrillos + altoLadrillo
       && posXpelota + tamanoPelota >= posXladrillo1
       && posXpelota <= posXladrillo1 + anchoLadrillo) {
-    golpeado1 = true;
+    this.golpeado = true;
     pasoXpelota = -pasoXpelota;
     aLaIzquierda = true;
   }
   // Por la derecha
   else if( aLaIzquierda
-      && !golpeado1
+      && !this.golpeado
       && posYpelota + tamanoPelota >= posYladrillos
       && posYpelota <= posYladrillos + altoLadrillo
       && posXpelota <= posXladrillo1 + anchoLadrillo
       && posXpelota + tamanoPelota >= posXladrillo1) {
-    golpeado1 = true;
+    this.golpeado = true;
     pasoXpelota = -pasoXpelota;
     aLaIzquierda = false;
   }
@@ -263,6 +286,18 @@ window.onload = function() {
   barraInicial.crearBarra();
   pelotaInicial = new Pelota('pelotaInicial', barraInicial);
   pelotaInicial.crearPelota();
+
+  // Pintamos todos los ladrillos
+  ladrillos = new Array(cantLadrillos);
+  ladrillos[0] = new Ladrillo(i, 50, 50);
+  for(var i = 1; i < cantLadrillos; i++ ) {
+    if(i % 13 == 0) {
+      ladrillos[i] = new Ladrillo(i, ladrillos[i - 13].posXladrillo, ladrillos[i - 13].posYladrillo + ladrillos[i - 13].altoLadrillo + 10);
+    }
+    else {
+      ladrillos[i] = new Ladrillo(i, ladrillos[i - 1].posXladrillo + ladrillos[i - 1].anchoLadrillo + 10, ladrillos[i - 1].posYladrillo);
+    }
+  }
 
   // Llamamos a las funciones
   document.onkeypress = function(teclado) {
