@@ -1,0 +1,41 @@
+#divContenedor {
+    background-color: rgb(87, 87, 87);
+    position: absolute;
+    margin: auto;
+}
+.textoVidas {
+    color: white;
+    font-weight: bolder;
+    position: absolute;
+    margin-left: 70px;
+    margin-top: 3px;
+  }
+.texto {
+    color: white;
+    font-weight: bolder;
+    position: absolute;
+  }
+#textoEmpezar {
+    top: 30%;
+    left: 33%;
+    text-align: center;
+}
+#textoGanado {
+    top: 45%;
+    left: 45%;
+    visibility: hidden;
+}
+#textoPerdido {
+    top: 45%;
+    left: 45%;
+    visibility: hidden;
+}
+#textoJugarOtraVez {
+    top: 50%;
+    left: 42%;
+    visibility: hidden;
+    background-color: brown;
+    padding: 10px;
+    border: solid 3px white;
+    width: 145px;
+}
